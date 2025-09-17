@@ -1,0 +1,19 @@
+Node.js project - install with npm:
+- npm install
+- npm run dev
+
+Main dependencies (see package.json):
+- express
+- body-parser
+- cors
+- dotenv
+- node-cron
+- uuid
+- zod
+- openai
+- nodemon (dev)
+
+Env vars:
+- OPENAI_API_KEY=sk-proj-...
+- SECRET=change-me
+

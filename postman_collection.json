@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "Nutrition AI Demo API",
+    "_postman_id": "a4d8a8a0-1b2c-4c7e-9b1a-123456789abc",
+    "description": "Demo API Express: hồ sơ, nguyên liệu, gợi ý, planner, tracking, feedback, chatbot",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "userId", "value": "u1" }
+  ],
+  "item": [
+    { "name": "Health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+    {
+      "name": "Profile - POST update",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/profile/{{userId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"age\": 28,\n  \"gender\": \"male\",\n  \"weight\": 70,\n  \"height\": 175,\n  \"activityLevel\": \"moderate\",\n  \"conditions\": [\"tieu duong\"],\n  \"allergies\": [\"dau phong\"],\n  \"tastes\": [\"cay\"],\n  \"goal\": \"maintain\"\n}"
+        }
+      }
+    },
+    { "name": "Profile - GET", "request": { "method": "GET", "url": "{{baseUrl}}/api/profile/{{userId}}" } },
+    { "name": "Ingredients - GET list", "request": { "method": "GET", "url": "{{baseUrl}}/api/ingredients/{{userId}}" } },
+    {
+      "name": "Ingredients - POST manual",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/ingredients/{{userId}}/manual",
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Uc ga\",\n  \"quantity\": 2,\n  \"unit\": \"mieng\",\n  \"expiryDate\": \"2030-01-01T00:00:00.000Z\"\n}" }
+      }
+    },
+    {
+      "name": "Ingredients - POST barcode (demo)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/ingredients/{{userId}}/barcode",
+        "body": { "mode": "raw", "raw": "{\n  \"barcode\": \"8938505979999\"\n}" }
+      }
+    },
+    {
+      "name": "Ingredients - POST image → AI classify",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/ingredients/{{userId}}/image",
+        "body": { "mode": "raw", "raw": "{\n  \"imageUrl\": \"https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg\"\n}" },
+        "description": "Yêu cầu OPENAI_API_KEY trong .env"
+      }
+    },
+    { "name": "Ingredients - GET expiring (≤2 days)", "request": { "method": "GET", "url": "{{baseUrl}}/api/ingredients/{{userId}}/expiring" } },
+    {
+      "name": "Recommend - POST recommendations (AI-fallback)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/recommend/{{userId}}",
+        "body": { "mode": "raw", "raw": "{\n  \"priorities\": {\n    \"vegan\": false,\n    \"proteinRich\": true,\n    \"maxTime\": 25,\n    \"maxPriceLevel\": 2\n  }\n}" },
+        "description": "Có AI nếu có OPENAI_API_KEY, nếu không sẽ fallback"
+      }
+    },
+    {
+      "name": "Recommend - POST substitute",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/recommend/{{userId}}/substitute",
+        "body": { "mode": "raw", "raw": "{\n  \"recipeId\": \"r1\"\n}" }
+      }
+    },
+    {
+      "name": "Planner - POST create (week)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/planner/{{userId}}",
+        "body": { "mode": "raw", "raw": "{\n  \"scope\": \"week\",\n  \"constraints\": { \"diet\": \"vegetarian\" }\n}" }
+      }
+    },
+    { "name": "Planner - GET current plan", "request": { "method": "GET", "url": "{{baseUrl}}/api/planner/{{userId}}" } },
+    {
+      "name": "Tracking - POST log meal",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/tracking/{{userId}}/log",
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Salad uc ga\",\n  \"portion\": 1,\n  \"calories\": 320,\n  \"macros\": { \"protein\": 35, \"carb\": 8, \"fat\": 15 }\n}" }
+      }
+    },
+    { "name": "Tracking - GET progress today", "request": { "method": "GET", "url": "{{baseUrl}}/api/tracking/{{userId}}/progress" } },
+    { "name": "Tracking - GET weekly report", "request": { "method": "GET", "url": "{{baseUrl}}/api/tracking/{{userId}}/weekly-report" } },
+    {
+      "name": "Feedback - POST rate recipe",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/feedback/{{userId}}/rate",
+        "body": { "mode": "raw", "raw": "{\n  \"recipeId\": \"r1\",\n  \"stars\": 5,\n  \"comment\": \"De nau, ngon!\",\n  \"difficulty\": \"easy\"\n}" }
+      }
+    },
+    { "name": "Feedback - GET list", "request": { "method": "GET", "url": "{{baseUrl}}/api/feedback/{{userId}}" } },
+    {
+      "name": "Chatbot - POST ask",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/chatbot/{{userId}}",
+        "body": { "mode": "raw", "raw": "{\n  \"question\": \"Toi nay an gi sau khi tap gym?\"\n}" },
+        "description": "Yêu cầu OPENAI_API_KEY trong .env để dùng AI, có fallback rule-based"
+      }
+    }
+  ]
+}
+
+
